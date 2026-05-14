@@ -1,46 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import Portfolio from '../components/Portfolio.tsx';
-import Contact from '../components/Contact.tsx';
+import api from '../lib/axios';
 
-export default function PortfolioPage() {
+const Portfolio = () => {
+  const [projects, setProjects] = useState([]);
+  const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get('/projects');
+        const data = Array.isArray(response.data) ? response.data : [];
+        setProjects(data);
+      } catch (err) {
+        setProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  // SAFE - Always array
+  const filteredProjects = Array.isArray(projects) 
+    ? (filter === 'all' ? projects : projects.filter(p => p.category === filter))
+    : [];
+
+  const categories = ['all', 'web', 'mobile', 'ai', 'cloud'];
+
+  if (loading) {
+    return <div className="text-center py-20">Loading...</div>;
+  }
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="pt-32"
-    >
-      <div className="container mx-auto px-6 mb-16">
-        <div className="max-w-3xl">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-display font-bold mb-8"
+    <div className="container mx-auto px-6 py-12">
+      <div className="flex flex-wrap justify-center gap-4 mb-12">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setFilter(cat)}
+            className={`px-6 py-2 rounded-full ${filter === cat ? 'bg-accent text-white' : 'bg-gray-100'}`}
           >
-            Our <span className="text-accent underline underline-offset-8">Portfolio</span>
-          </motion.h1>
-          <p className="text-xl text-gray-500 leading-relaxed">
-            A collection of our favorite projects. We approach every challenge with creativity and technical precision to deliver results that exceed expectations.
-          </p>
-        </div>
+            {cat}
+          </button>
+        ))}
       </div>
-      
-      <Portfolio />
 
-      <div className="bg-primary py-24 text-white">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-display font-bold mb-8">Ready to be our next success story?</h2>
-          <p className="text-gray-400 mb-12 max-w-2xl mx-auto text-lg">
-            Every project starts with a conversation. Let's talk about your goals and how we can achieve them together.
-          </p>
-          <motion.div whileHover={{ scale: 1.05 }}>
-             <a href="/contact" className="bg-accent text-white px-10 py-5 rounded-full text-lg font-bold shadow-xl shadow-accent/20">
-               Get Started Now
-             </a>
-          </motion.div>
+      {filteredProjects.length === 0 ? (
+        <div className="text-center py-20">No projects found</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProjects.map((project, i) => (
+            <div key={project._id || i} className="bg-white rounded-2xl shadow overflow-hidden">
+              {project.imageUrl && (
+                <img src={project.imageUrl} alt={project.title} className="w-full h-48 object-cover" />
+              )}
+              <div className="p-6">
+                <h3 className="text-xl font-bold">{project.title || 'Project'}</h3>
+                <p className="text-gray-500 mt-2">{project.description || 'No description'}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
-    </motion.div>
+      )}
+    </div>
   );
-}
+};
+
+export default Portfolio;

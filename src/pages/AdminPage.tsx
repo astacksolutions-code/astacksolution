@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { LogIn, LogOut, LayoutDashboard, MessageSquare, Files, Plus, Trash2, Edit, Save } from 'lucide-react';
 import api from '../lib/axios';
 import { cn } from '../lib/utils';
@@ -15,24 +15,33 @@ export default function AdminPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    console.log('🔍 Checking localStorage for token...');
     const token = localStorage.getItem('astack_token');
+    console.log('Token exists?', !!token);
+    
     if (token) {
+      console.log('✅ Token found, setting isLoggedIn to true');
       setIsLoggedIn(true);
       fetchData();
+    } else {
+      console.log('❌ No token found');
     }
   }, []);
 
   const fetchData = async () => {
+    console.log('📡 Fetching dashboard data...');
     setLoading(true);
     try {
       const [contRes, projRes] = await Promise.all([
         api.get('/contact'),
         api.get('/projects')
       ]);
-      setContacts(contRes.data);
-      setProjects(projRes.data);
+      console.log('Contacts:', contRes.data?.length || 0);
+      console.log('Projects:', projRes.data?.length || 0);
+      setContacts(contRes.data || []);
+      setProjects(projRes.data || []);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching data:', err);
     } finally {
       setLoading(false);
     }
@@ -40,13 +49,29 @@ export default function AdminPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔑 Login attempt with:', email);
     setLoading(true);
+    setMessage('');
+    
     try {
       const res = await api.post('/admin/login', { email, password });
-      localStorage.setItem('astack_token', res.data.token);
-      setIsLoggedIn(true);
-      fetchData();
+      console.log('📦 Login response:', res.data);
+      
+      if (res.data.token) {
+        console.log('✅ Login successful! Saving token...');
+        localStorage.setItem('astack_token', res.data.token);
+        localStorage.setItem('astack_admin', JSON.stringify(res.data.admin));
+        
+        console.log('🔄 Setting isLoggedIn to true...');
+        setIsLoggedIn(true);
+        
+        console.log('📡 Fetching data...');
+        await fetchData();
+        
+        console.log('✅ Dashboard should now be visible!');
+      }
     } catch (err: any) {
+      console.error('❌ Login error:', err);
       setMessage(err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
@@ -54,11 +79,19 @@ export default function AdminPage() {
   };
 
   const handleLogout = () => {
+    console.log('🚪 Logging out...');
     localStorage.removeItem('astack_token');
+    localStorage.removeItem('astack_admin');
     setIsLoggedIn(false);
+    setContacts([]);
+    setProjects([]);
   };
 
+  console.log('🖥️ Rendering AdminPage, isLoggedIn =', isLoggedIn);
+
+  // ✅ If not logged in, show login form
   if (!isLoggedIn) {
+    console.log('📱 Showing login form');
     return (
       <div className="min-h-screen flex items-center justify-center bg-soft px-6">
         <motion.div 
@@ -113,6 +146,8 @@ export default function AdminPage() {
     );
   }
 
+  // ✅ If logged in, show dashboard
+  console.log('📊 Showing dashboard');
   return (
     <div className="min-h-screen bg-soft pt-32 pb-24 px-6">
       <div className="container mx-auto">

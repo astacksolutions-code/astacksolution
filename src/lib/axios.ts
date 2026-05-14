@@ -1,19 +1,40 @@
 import axios from 'axios';
 
+// Use environment variable for flexibility
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000,
 });
 
-// Add interceptor to include auth token in requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('astack_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// Request interceptor for auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('astack_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
+
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('astack_token');
+      window.location.href = '/admin';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

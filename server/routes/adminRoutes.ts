@@ -2,6 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin.ts';
 
+
 const router = express.Router();
 
 // POST /api/admin/login
