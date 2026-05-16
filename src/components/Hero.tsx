@@ -22,7 +22,7 @@ export default function Hero() {
           {"{}"}
         </div>
       </div>
-
+<img src=".logo.png" alt="" />
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl">
           <motion.div
