@@ -44,11 +44,11 @@ const Portfolio = () => {
     : [];
 
   const categories = [
-    { id: 'all', label: 'All Work', icon: '🎨' },
-    { id: 'web', label: 'Web Apps', icon: '🌐' },
-    { id: 'mobile', label: 'Mobile', icon: '📱' },
-    { id: 'ai', label: 'AI/ML', icon: '🤖' },
-    { id: 'design', label: 'Design', icon: '✨' }
+    { id: 'all', label: 'All Work', icon: '' },
+    { id: 'web', label: 'Web Apps', icon: '' },
+    { id: 'mobile', label: 'Mobile', icon: '' },
+    { id: 'ai', label: 'AI/ML', icon: '' },
+    { id: 'design', label: 'Design', icon: '' }
   ];
 
   const getCategoryColor = (category: string) => {

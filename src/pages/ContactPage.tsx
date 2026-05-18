@@ -28,8 +28,8 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-24 cursor-default">
            {[
              { icon: <Mail />, title: "Email", info: "astacksolutions@gmail.com", sub: "Support within 24h" },
-             { icon: <Phone />, title: "Phone", info: "+1 (234) 567-890", sub: "Mon - Fri, 9am - 6pm" },
-             { icon: <MapPin />, title: "Office", info: "Innovation St, 101", sub: "Digital Hub, NY" },
+             { icon: <Phone />, title: "Phone", info: "+923282308116", sub: "Mon - Fri, 9am - 6pm" },
+             { icon: <MapPin />, title: "Office", info: "Karachi,Pakistan", sub: "Karachi South" },
              { icon: <Clock />, title: "Hours", info: "Mon - Sat", sub: "Global Availability" }
            ].map((item, i) => (
              <motion.div 
@@ -51,17 +51,7 @@ export default function ContactPage() {
       <Contact />
 
       {/* Map Placeholder */}
-      <div className="h-96 w-full bg-gray-100 grayscale hover:grayscale-0 transition-all duration-700 relative group overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center bg-primary/5">
-          <div className="text-center z-10 p-10 bg-white rounded-3xl shadow-xl border border-gray-100 group-hover:scale-105 transition-transform">
-             <MapPin size={48} className="text-accent mx-auto mb-4" />
-             <h3 className="text-2xl font-display font-bold mb-2">Our Headquarters</h3>
-             <p className="text-gray-500">Find us at the heart of Digital Innovation District.</p>
-          </div>
-        </div>
-        {/* Subtle grid pattern for map feel */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #3B82F6 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-      </div>
+   
     </motion.div>
   );
 }

@@ -45,11 +45,11 @@ const Portfolio = () => {
     : [];
 
   const categories = [
-    { id: 'all', label: 'All Work', icon: '🎨', color: 'bg-gray-500' },
-    { id: 'web', label: 'Web Development', icon: '🌐', color: 'bg-blue-500' },
-    { id: 'mobile', label: 'Mobile Apps', icon: '📱', color: 'bg-green-500' },
-    { id: 'ai', label: 'AI Solutions', icon: '🤖', color: 'bg-purple-500' },
-    { id: 'design', label: 'UI/UX Design', icon: '✨', color: 'bg-pink-500' }
+    { id: 'all', label: 'All Work', icon: '', color: 'bg-gray-500' },
+    { id: 'web', label: 'Web Development', icon: '', color: 'bg-blue-500' },
+    { id: 'mobile', label: 'Mobile Apps', icon: '', color: 'bg-green-500' },
+    { id: 'ai', label: 'AI Solutions', icon: '', color: 'bg-purple-500' },
+    { id: 'design', label: 'UI/UX Design', icon: '', color: 'bg-pink-500' }
   ];
 
   const getCategoryColor = (category: string) => {
