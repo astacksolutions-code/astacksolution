@@ -74,7 +74,7 @@ export default function Hero() {
                 className="w-full sm:w-auto text-primary font-bold flex items-center justify-center space-x-2 group px-4 py-2"
               >
                 <span className="border-b-2 border-transparent group-hover:border-primary transition-all">View Our Work</span>
-              </Link>
+              </Link>            
             </motion.div>
 
             {/* Feature badges */}

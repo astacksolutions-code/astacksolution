@@ -334,3 +334,84 @@ app.listen(PORT, async () => {
   // Create default admins
   await createDefaultAdmin();
 });
+
+// bookiing 
+// ============ BOOKING SCHEMA & ROUTES ============
+
+// Booking Schema
+const bookingSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  service: { type: String, required: true },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  message: { type: String, default: '' },
+  status: { type: String, default: 'pending' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Booking = mongoose.model('Booking', bookingSchema);
+
+// GET /api/bookings - Get all bookings
+app.get('/api/bookings', async (req, res) => {
+  try {
+    const bookings = await Booking.find().sort({ createdAt: -1 });
+    console.log(`📅 Found ${bookings.length} bookings`);
+    res.json(bookings);
+  } catch (err) {
+    console.error('Error fetching bookings:', err);
+    res.json([]);
+  }
+});
+
+// POST /api/bookings - Create new booking
+app.post('/api/bookings', async (req, res) => {
+  try {
+    const { name, email, phone, service, date, time, message } = req.body;
+    console.log('📅 New booking:', { name, email, service, date, time });
+    
+    const booking = new Booking({
+      name,
+      email,
+      phone,
+      service,
+      date,
+      time,
+      message: message || '',
+      createdAt: new Date()
+    });
+    
+    await booking.save();
+    console.log('✅ Booking saved successfully');
+    res.status(201).json({ message: 'Booking confirmed!', booking });
+  } catch (error) {
+    console.error('Error saving booking:', error);
+    res.status(500).json({ message: 'Error saving booking', error: error.message });
+  }
+});
+
+// PUT /api/bookings/:id - Update booking status
+app.put('/api/bookings/:id', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const updated = await Booking.findByIdAndUpdate(
+      req.params.id, 
+      { status, updatedAt: new Date() }, 
+      { new: true }
+    );
+    res.json({ message: 'Booking updated', booking: updated });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating booking' });
+  }
+});
+
+// DELETE /api/bookings/:id - Delete booking
+app.delete('/api/bookings/:id', async (req, res) => {
+  try {
+    await Booking.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Booking deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting booking' });
+  }
+});
