@@ -17,8 +17,6 @@ export default function Home() {
     >
       <Hero />
       <AboutSection />
-      <Services />
-      <Portfolio />
       <WhyUs />
       <Contact />
     </motion.div>
